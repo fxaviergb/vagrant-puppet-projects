@@ -1,0 +1,18 @@
+<VirtualHost *:80>
+  ServerAdmin webmaster@localhost
+  DocumentRoot <%= @document_root %>
+
+  <Directory <%= @document_root %>>
+    Require all granted
+    AllowOverride None
+  </Directory>
+
+  AddDefaultCharset UTF-8
+
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+  <FilesMatch \.php$>
+    SetHandler application/x-httpd-php
+  </FilesMatch>
+</VirtualHost>

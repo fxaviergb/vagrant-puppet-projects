@@ -1,0 +1,27 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "bento/ubuntu-22.04"
+
+  # Redirigir el puerto 80 de la VM al 8080 en la máquina anfitriona
+  config.vm.network "forwarded_port", guest: 80, host: 8080
+
+  # Configuración de VirtualBox
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "1024"
+    vb.cpus = 2
+  end
+
+  # Instalar Puppet Agent en la VM
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo wget https://apt.puppetlabs.com/puppet6-release-bionic.deb
+    sudo dpkg -i puppet6-release-bionic.deb
+    sudo apt-get update
+    sudo apt-get install -y puppet-agent
+  SHELL
+
+  # Provisión de Puppet para configurar Apache
+  config.vm.provision "puppet" do |puppet|
+    puppet.manifests_path = "manifests"
+    puppet.manifest_file = "site.pp"
+    puppet.module_path = "modules"
+  end
+end
